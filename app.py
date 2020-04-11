@@ -1,5 +1,5 @@
 import os
-from app import app
+
 from flask import Flask, render_template, request
 
 from ocr_core import ocr_core
