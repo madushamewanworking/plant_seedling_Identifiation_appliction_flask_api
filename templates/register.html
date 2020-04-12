@@ -32,12 +32,12 @@
 					<img src="images/img-01.png" alt="IMG">
 				</div>
 
-				<form action="{{ url_for('login') }}" method="post" class="login100-form validate-form">
+				<form action="{{ url_for('register') }}" method="post" class="login100-form validate-form">
 					<span class="login100-form-title">
 						Plant Seedling Identification
 					</span>
                     <span class="login100-form-title">
-						<h6>Prediction Start with Members login</h6>
+						<h6>Register New Member</h6>
 					</span>
 
 					<div class="wrap-input100 validate-input" data-validate = "Username required">
@@ -56,8 +56,16 @@
 						</span>
 					</div>
 
+                    <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						<input class="input100" type="email" name="email" placeholder="Email">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
 					<div class="container-login100-form-btn">
-						<input  type="submit" value="Login" class="login100-form-btn">
+						<input  type="submit" value="Register" class="login100-form-btn">
                         <div class="msg">{{ msg }}</div>
 						</input >
 					</div>
@@ -71,9 +79,9 @@
 {#						</a>#}
 {#					</div>#}
 
-					<div class="text-center p-t-45">
-						<a class="txt2" href="{{ url_for('register') }}">
-							Create your Account
+					<div class="text-center p-t-20">
+						<a class="txt2" href="{{ url_for('login') }}">
+							Already Registered? Login here
 							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
 						</a>
 					</div>
