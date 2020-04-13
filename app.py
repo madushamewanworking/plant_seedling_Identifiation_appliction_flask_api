@@ -107,6 +107,28 @@ def register():
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
 
+@app.route('/home')
+def home():
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        return render_template('home.html', username=session['username'])
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+
+@app.route('/account')
+def account():
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # We need all the account info for the user so we can display it on the profile page
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE id = %s', [session['id']])
+        account = cursor.fetchone()
+        # Show the profile page with account info
+        return render_template('account.html', account=account)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_page():
     if request.method == 'POST':
@@ -134,4 +156,4 @@ def upload_page():
         return render_template('upload.html')
 
 if __name__ == '__main__':
-    app.run(host= '0.0.0.0',port="33")
+    app.run()
