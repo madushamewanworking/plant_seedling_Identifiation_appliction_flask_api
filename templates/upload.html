@@ -1,32 +1,413 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Upload Image</title>
-  </head>
-  <body>
+<html lang="en">
+<head>
+    <title>Login V1</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    {#<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">#}
+    {#    {{ url_for('static',filename='styles/mainpage.css') }}#}
+    {#    ../static/styles/images/icons/favicon.ico#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>#}
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="{{ url_for('static',filename='styles/images/icons/favicon.ico') }}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static',filename='styles/vendor/bootstrap/css/bootstrap.min.css') }}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static',filename='styles/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/vendor/animate/animate.css') }}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static',filename='styles/vendor/css-hamburgers/hamburgers.min.css') }}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static',filename='styles/vendor/select2/select2.min.css') }}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/util.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/main.css') }}">
+    <!--===============================================================================================-->
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
 
-    {% if msg %}
-    <h1>{{ msg }}</h1>
-    {% endif %}
-    
-    <h1>Upload new File</h1>
-    
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
+        .imagePreview {
+            width: 100%;
+            height: 180px;
+            background-position: center center;
+            background: url({{ url_for('static',filename='styles/images/plant-roots-vector-1.png') }});
+            background-color: #fff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: inline-block;
+            box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
+        }
 
-    <h1>Result:</h1>
-    {% if img_src %}
-      <img src="{{ img_src }}">
-    {% endif %}
-    
-    {% if extracted_text %}
-      <p> The extracted text from the image above is: <b> {{ extracted_text }} </b></p>
-    
-    {% else %}
-      The extracted text will be displayed here
-    {% endif %}
-  </body>
+        .imagePreview2 {
+            width: 100%;
+            height: 350px;
+            background-position: center center;
+
+            background-color: #fff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: inline-block;
+            box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            display: block;
+            border-radius: 0px;
+            box-shadow: 0px 4px 6px 2px rgba(0, 0, 0, 0.2);
+            margin-top: -5px;
+            background-color: #7355CA;
+        }
+
+        .imgUp {
+            margin-bottom: 15px;
+        }
+
+        .del {
+            position: absolute;
+            top: 0px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            background-color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .imgAdd {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #4bd7ef;
+            color: #fff;
+            box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            line-height: 30px;
+            margin-top: 0px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        /*Eliminates padding, centers the thumbnail */
+
+        body, html {
+            padding: 0;
+            margin: 0;
+            {#text-align: center;#}
+        }
+
+        /* Styles the thumbnail */
+
+        a.lightbox img {
+            height: 250px;
+            border: 3px solid white;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, .3);
+            margin: 50px 20px 20px 20px;
+        }
+
+        /* Styles the lightbox, removes it from sight and adds the fade-in transition */
+
+        .lightbox-target {
+            position: fixed;
+            top: -100%;
+            width: 100%;
+            background: rgba(0, 0, 0, .7);
+            width: 100%;
+            opacity: 0;
+            -webkit-transition: opacity .5s ease-in-out;
+            -moz-transition: opacity .5s ease-in-out;
+            -o-transition: opacity .5s ease-in-out;
+            transition: opacity .5s ease-in-out;
+            overflow: hidden;
+        }
+
+        /* Styles the lightbox image, centers it vertically and horizontally, adds the zoom-in transition and makes it responsive using a combination of margin and absolute positioning */
+
+        .lightbox-target img {
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            max-height: 0%;
+            max-width: 0%;
+            border: 3px solid white;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, .3);
+            box-sizing: border-box;
+            -webkit-transition: .5s ease-in-out;
+            -moz-transition: .5s ease-in-out;
+            -o-transition: .5s ease-in-out;
+            transition: .5s ease-in-out;
+        }
+
+        /* Styles the close link, adds the slide down transition */
+
+        a.lightbox-close {
+            display: block;
+            width: 50px;
+            height: 50px;
+            box-sizing: border-box;
+            background: white;
+            color: black;
+            text-decoration: none;
+            position: absolute;
+            top: -80px;
+            right: 0;
+            margin-right: 30px;
+            margin-top: 100px;
+            -webkit-transition: .5s ease-in-out;
+            -moz-transition: .5s ease-in-out;
+            -o-transition: .5s ease-in-out;
+            transition: .5s ease-in-out;
+        }
+
+        /* Provides part of the "X" to eliminate an image from the close link */
+
+        a.lightbox-close:before {
+            content: "";
+            display: block;
+            height: 30px;
+            width: 1px;
+            background: black;
+            position: absolute;
+            left: 26px;
+            top: 10px;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        /* Provides part of the "X" to eliminate an image from the close link */
+
+        a.lightbox-close:after {
+            content: "";
+            display: block;
+            height: 30px;
+            width: 1px;
+            background: black;
+            position: absolute;
+            left: 26px;
+            top: 10px;
+            -webkit-transform: rotate(-45deg);
+            -moz-transform: rotate(-45deg);
+            -o-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+
+        }
+
+        /* Uses the :target pseudo-class to perform the animations upon clicking the .lightbox-target anchor */
+
+        .lightbox-target:target {
+            opacity: 1;
+            top: 0;
+            bottom: 0;
+        }
+
+        .lightbox-target:target img {
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+        .lightbox-target:target a.lightbox-close {
+            top: 0px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light">
+    <a class="navbar-brand" href="{{ url_for('home') }}">LeafSnap</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item ">
+                <a class="nav-link" href="{{ url_for('home') }}">Home </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ url_for('upload_page') }}">Try It<span
+                        class="sr-only">(current)</span></a>
+            </li>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('account') }}">Account</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Contact Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Plant Sedling Classification using Deeplearning</a>
+            </li>
+        </ul>
+        <button class="btn btn-outline-danger my-2 my-sm-0">
+            <a href="{{ url_for('logout') }}"><i class="fa fa-sign-out"></i>Logout</a>
+        </button>
+    </div>
+</nav>
+
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-pic js-tilt" data-tilt>
+                <img src="images/img-01.png" alt="IMG">
+            </div>
+
+            <span class="login100-form-title">
+						Try it! Upload your image
+            </span>
+
+            {#/////////////////#}
+
+            <br>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-2 imgUp">
+                        <div class="imagePreview"></div>
+
+                        <form method=post enctype=multipart/form-data>
+                            <label class="btn btn-primary">
+                                Upload
+                                <input type="file" class="uploadFile img" name=file value="Upload Photo"
+                                       style="width: 0px;height: 0px;overflow: hidden;">
+                            </label>
+                            <input class="btn btn-primary" style="width: 270px" type=submit
+                                   value="Proceed To prediction">
+                        </form>
+                    </div><!-- col-2 -->
+                    {#  <i class="fa fa-plus imgAdd"></i>#}
+                </div><!-- row -->
+            </div><!-- container -->
+            {#/////////////////#}
+
+            {##}
+
+            {#            {% if msg %}#}
+            {#                <h1>{{ msg }}</h1>#}
+            {#            {% endif %}#}
+
+
+            {#            <form method=post enctype=multipart/form-data>#}
+            {#                <p><input type=file name=file>#}
+            {#                    <input type=submit value=Upload>#}
+            {#            </form>#}
+
+
+            {#            <h1>Result:</h1>#}
+
+            {% if img_src %}
+                <span class="login100-form-title">
+						Scroll Down to See result
+            </span>
+            {% endif %}
+
+            {% if extracted_text %}
+
+
+                <dl>
+                    <dt>Prediction Result</dt>
+                    <dd>- The Pediction Result is: <b> {{ extracted_text }} </b></dd>
+                    <dd>- To get more information scroll down below (segmented image, Herbicide prescription)
+                        to<b> {{ extracted_text }} </b></dd>
+                </dl>
+
+            {% endif %}
+            {% if img_src %}
+
+                {#                <div class="imagePreview2" style="background: url({{ img_src }});"></div>#}
+                {#                uploaded image#}
+                <a class="lightbox" href="#dog">
+                    <img src="{{ img_src }}"/>
+                </a>
+                <div class="lightbox-target" id="dog">
+                    <img src="{{ img_src }}"/>
+                    <a class="lightbox-close" href="#"></a>
+                </div>
+                {#                <img src="{{ img_src }}">#}
+
+                <dt>Segmented Image</dt>
+                {#                segmented  image#}
+                <a class="lightbox" href="#dog">
+                    <img src="{{ img_seg }}"/>
+                </a>
+                <div class="lightbox-target" id="dog">
+                    <img src="{{ img_seg }}"/>
+                    <a class="lightbox-close" href="#"></a>
+                </div>
+
+
+
+
+            {% endif %}
+
+
+        </div>
+    </div>
+</div>
+
+
+<!--===============================================================================================-->
+<script src="{{ url_for('static',filename='styles/vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+<!--===============================================================================================-->
+<script src="{{ url_for('static',filename='styles/vendor/bootstrap/js/popper.js') }}"></script>
+<script src="{{ url_for('static',filename='styles/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+<!--===============================================================================================-->
+<script src="{{ url_for('static',filename='styles/vendor/select2/select2.min.js') }}"></script>
+<!--===============================================================================================-->
+<script src="{{ url_for('static',filename='styles/vendor/tilt/tilt.jquery.min.js') }}"></script>
+
+
+<script>
+    $('.js-tilt').tilt({
+        scale: 1.1
+    })
+</script>
+<script>
+
+    $(".imgAdd").click(function () {
+        $(this).closest(".row").find('.imgAdd').before('<div class="col-sm-2 imgUp"><div class="imagePreview"></div><label class="btn btn-primary">Upload<input type="file" class="uploadFile img" value="Upload Photo" style="width:0px;height:0px;overflow:hidden;"></label><i class="fa fa-times del"></i></div>');
+    });
+    $(document).on("click", "i.del", function () {
+        $(this).parent().remove();
+    });
+    $(function () {
+        $(document).on("change", ".uploadFile", function () {
+            var uploadFile = $(this);
+            var files = !!this.files ? this.files : [];
+            if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+
+            if (/^image/.test(files[0].type)) { // only image file
+                var reader = new FileReader(); // instance of the FileReader
+                reader.readAsDataURL(files[0]); // read the local file
+
+                reader.onloadend = function () { // set image data as background of div
+                    //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+                    uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
+                }
+            }
+
+        });
+    });
+</script>
+<!--===============================================================================================-->
+<script src="{{ url_for('static',filename='styles/js/main.js') }}"></script>
+
+</body>
 </html>
-    

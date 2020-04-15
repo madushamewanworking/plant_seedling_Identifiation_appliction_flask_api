@@ -143,15 +143,22 @@ def upload_page():
 
         if file and allowed_file(file.filename):
             file.save(os.path.join(os.getcwd() + UPLOAD_FOLDER, file.filename))
+            print(os.getcwd() + UPLOAD_FOLDER)
 
             # call the OCR function on it
             extracted_text = ocr_core(file.filename)
+
+            # create segmanted image path
+            filename=file.filename
+            segmentedname=filename[:-4]+"_segmanted.png"
+            print(segmentedname)
 
             # extract the text and display it
             return render_template('upload.html',
                                    msg='Successfully processed',
                                    extracted_text=extracted_text,
-                                   img_src=UPLOAD_FOLDER + file.filename)
+                                   img_src=UPLOAD_FOLDER + file.filename,
+                                   img_seg=UPLOAD_FOLDER+segmentedname)
     elif request.method == 'GET':
         return render_template('upload.html')
 
